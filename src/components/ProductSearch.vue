@@ -1,7 +1,17 @@
 <template>
   <div id="container">
-    <input v-model="query" placeholder="Enter product name" />
-    <input v-model="keywords" placeholder="Enter features like color, storage (comma-separated)" />
+    <input
+      v-model="query"
+      placeholder="Enter product name"
+      @keyup.enter="focusKeywords"
+      ref="queryInput"
+    />
+    <input
+      v-model="keywords"
+      placeholder="Enter features like color, storage (comma-separated)"
+      @keyup.enter="searchProducts"
+      ref="keywordsInput"
+    />
     <button @click="searchProducts">Search</button>
 
     <!-- Loading animation -->
@@ -53,7 +63,15 @@ export default {
     };
   },
   methods: {
+    focusKeywords() {
+      this.$refs.keywordsInput.focus();
+    },
     async searchProducts() {
+      if (!this.query.trim()) {
+        alert("Please enter a product name");
+        return;
+      }
+
       this.results = null; // Clear previous results
       this.isLoading = true; // Show loading animation
       this.latestStatusMessage = '';
@@ -87,6 +105,9 @@ export default {
         }
       }
     }
+  },
+  mounted() {
+    this.$refs.queryInput.focus();
   }
 };
 </script>
