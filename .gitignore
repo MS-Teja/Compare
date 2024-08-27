@@ -13,7 +13,6 @@ dist-ssr
 *.local
 .venv
 backend/.env
-src/assests/vue.svg
 
 
 # Editor directories and files

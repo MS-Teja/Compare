@@ -39,10 +39,10 @@ def scrape_data(url, source):
     send_status(f"Searching on {source}...")
 
     elements = {
-        "Title": "span.a-size-medium" if source == "Amazon" else "div._4rR01T",
-        "Price": "span.a-price-whole" if source == "Amazon" else "div._30jeq3._1_WHN1",
-        "Availability": "div.a-section.a-spacing-none.a-spacing-top-micro" if source == "Amazon" else "div._3Ay6Sb._31Dcoz",
-        "Url": "a.a-link-normal" if source == "Amazon" else "a._1fQZEK"
+        "Title": "Product title",
+        "Price": "Product price",
+        "Availability": "Product availability",
+        "Url": "Product URL"
     }
 
     try:
@@ -56,11 +56,11 @@ def scrape_data(url, source):
                 item["Availability"] = "Unavailable"
             if "Url" in item and item["Url"]:
                 if source == "Amazon":
-                    item["Url"] = item["Url"].replace("https://www.amazon.in", "")
-                    item["Url"] = f"https://www.amazon.in{item['Url']}"
-                else:  # Flipkart
-                    item["Url"] = item["Url"].replace("https://www.flipkart.com", "")
-                    item["Url"] = f"https://www.flipkart.com{item['Url']}"
+                    if not item["Url"].startswith("http"):
+                        item["Url"] = f"https://www.amazon.in{item['Url']}"
+                elif source == "Flipkart":
+                    if not item["Url"].startswith("http"):
+                        item["Url"] = f"https://www.flipkart.com{item['Url']}"
 
         send_status(f"Found {len(data)} items on {source}")
         return data

@@ -7,6 +7,11 @@
     <!-- Loading animation -->
     <div v-if="isLoading" class="loader"></div>
 
+    <!-- Status message -->
+    <div v-if="latestStatusMessage" class="status-message">
+      {{ latestStatusMessage }}
+    </div>
+
     <div v-if="results">
       <h2>Amazon</h2>
       <ul class="product-list">
@@ -44,18 +49,25 @@ export default {
       results: null,
       isLoading: false,
       eventSource: null,
+      latestStatusMessage: '',
     };
   },
   methods: {
     async searchProducts() {
       this.results = null; // Clear previous results
       this.isLoading = true; // Show loading animation
+      this.latestStatusMessage = '';
 
       // Setup SSE to listen for status updates
       this.eventSource = new EventSource('http://127.0.0.1:5000/status');
       this.eventSource.onmessage = (event) => {
         console.log('Received SSE:', event.data);
-        // Here you can display the status update to the user if needed
+        if (event.data === "DONE") {
+          this.latestStatusMessage = '';
+          this.eventSource.close();
+        } else {
+          this.latestStatusMessage = event.data;
+        }
       };
 
       try {
@@ -227,5 +239,12 @@ li {
 .icon {
       margin-left: 5px;
       font-size: 0.8em;
+}
+
+.status-message {
+  margin-top: 10px;
+  padding: 10px;
+  background-color: #f0f0f0;
+  border-radius: 4px;
 }
 </style>
