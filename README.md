@@ -23,6 +23,8 @@ Step-by-step instructions on how to get the development environment running.
     npm install
     ```
 4. Create and activate a virtual environment for backend:
+
+
     On Mac, use:
     ```sh
     python3 -m venv venv
